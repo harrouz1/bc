@@ -9,7 +9,7 @@ client.on("ready", async() => {
 console.log(`Back Online In ${client.guilds.size} Servers!`);
 console.log(`https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=8\nInvite Me To Your Server!`);
     setTimeout(() => {
-        client.user.setActivity(`${prefix}help | V 1.1`, {type: "WATCHING"});
+        client.user.setActivity(`${prefix}help |`, {type: "WATCHING"});
     }, 3000);
 });
 
@@ -156,19 +156,18 @@ client.on("message", async message => {
         let help = new Discord.RichEmbed()
             .setColor("RANDOM")
             .setThumbnail(message.author.avatarURL)
-            .setDescription(`**__برودكاست بوت | Version 1.1__ 
+            .setDescription(`**BC**
 
             برودكاست عادي : ${prefix}bc
             معلومات عن السيرفر : ${prefix}server
             برودكاست للأونلاين فقط : ${prefix}bco
             يعرض لك عدد المتبندين من سيرفرك : ${prefix}banned
             **`);
-            message.channel.sendEmbed(help); // رابط السيرفر يعود الى سيرفر CODES .
+            message.channel.sendEmbed(help); 
     }
 });
 
-// DONE BY MOORZ .
-// CODES - COPYRIGHT
+
 
 
 client.login("MzkxNTQwNzIwNTg4MjkyMDk2.DwFVQw.C7S21Qw7mygxz3PUU-iTXSgPlac");
