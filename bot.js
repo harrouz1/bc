@@ -1,89 +1,176 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
+const prefix = "$";
 
-function clean(text) {
-    if (typeof(text) === "string")
-      return text.replace(/`/g, "`" + String.fromCharCode(8203)).replace(/@/g, "@" + String.fromCharCode(8203));
-    else
-        return text;
-}
+// ========================================== [ CONSTRUCTERS ] =========================================
 
-const prefix = "Your Prefix";
-const token = "Token Your Bot";
-
-client.on("ready", () => {
-  console.log("Vulnix | Logged in! Server count: ${client.guilds.size}");
-  client.user.setGame(`Support Magic |${prefix}new`);
+client.on("ready", async() => {
+    client.user.setGame("Loading...");
+console.log(`Back Online In ${client.guilds.size} Servers!`);
+console.log(`https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=8\nInvite Me To Your Server!`);
+    setTimeout(() => {
+        client.user.setActivity(`${prefix}help | V 1.1`, {type: "WATCHING"});
+    }, 3000);
 });
 
+// ========================================== [ BROADCAST COMMANDS ] ====================================
 
-client.on("message", (message) => {
-  if (!message.content.startsWith(prefix) || message.author.bot) return;
 
-  if (message.content.toLowerCase().startsWith(prefix + `help`)) {
-    const embed = new Discord.RichEmbed()
-    .setTitle(`:mailbox_with_mail: Vulnix Help`)
-    .setColor(0xCF40FA)
-    .setDescription(`Hello! I'm Vulnix, the Discord bot for super cool support ticket stuff and more! Here are my commands:`)
-    .addField(`Tickets`, `[${prefix}new]() > Opens up a new ticket and tags the Support Team\n[${prefix}close]() > Closes a ticket that has been resolved or been opened by accident`)
-    .addField(`Other`, `[${prefix}help]() > Shows you this help menu your reading\n[${prefix}ping]() > Pings the bot to see how long it takes to react\n[${prefix}about]() > Tells you all about Vulnix`)
-    message.channel.send({ embed: embed });
-  }
+/*
+السلام عليكم ورحمة الله وبركاته .
+هذا ملف بوت برودكاست بوت بالظبط ولكن فيه بعض التصليحات لمشاكل موجودة في البوت
+-
+جميع الحقوق محفوظة لسيرفر كودز .
+CODES SERVER - MOORZ
+*/
 
-  if (message.content.toLowerCase().startsWith(prefix + `ping`)) {
-    message.channel.send(`Hoold on!`).then(m => {
-    m.edit(`:ping_pong: Wew, made it over the ~waves~ ! **Pong!**\nMessage edit time is ` + (m.createdTimestamp - message.createdTimestamp) + `ms, Discord API heartbeat is ` + Math.round(client.ping) + `ms.`);
-    });
-}
+client.on("message", async message => {
+    var command = message.content.split(" ")[0];
+    command = command.slice(prefix.length);
+        if(!message.channel.guild) return;
+            var args = message.content.split(" ").slice(1).join(" ");
+            if(command == "bc") {
+                if(!message.member.hasPermission("ADMINISTRATOR")) {
+                    return message.channel.send("**للأسف لا تمتلك صلاحية `ADMINISTRATOR`**");
+                }
+                    if(!args) {
+                        return message.reply("**يجب عليك كتابة كلمة او جملة لإرسال البرودكاست**");
+                    }
+                        message.channel.send(`**هل أنت متأكد من إرسالك البرودكاست؟\nمحتوى البرودكاست: \`${args}\`**`).then(m => {
+                            m.react("✅")
+                            .then(() => m.react("❌"));
 
-if (message.content.toLowerCase().startsWith(prefix + `new`)) {
-    const reason = message.content.split(" ").slice(1).join(" ");
-    if (!message.guild.roles.exists("name", "Support Team")) return message.channel.send(`This server doesn't have a \`Support Team\` role made, so the ticket won't be opened.\nIf you are an administrator, make one with that name exactly and give it to users that should be able to see tickets.`);
-    if (message.guild.channels.exists("name", "ticket-" + message.author.id)) return message.channel.send(`You already have a ticket open.`);
-    message.guild.createChannel(`ticket-${message.author.id}`, "text").then(c => {
-        let role = message.guild.roles.find("name", "Support Team");
-        let role2 = message.guild.roles.find("name", "@everyone");
-        c.overwritePermissions(role, {
-            SEND_MESSAGES: true,
-            READ_MESSAGES: true
-        });
-        c.overwritePermissions(role2, {
-            SEND_MESSAGES: false,
-            READ_MESSAGES: false
-        });
-        c.overwritePermissions(message.author, {
-            SEND_MESSAGES: true,
-            READ_MESSAGES: true
-        });
-        message.channel.send(`:white_check_mark: Your ticket has been created, #${c.name}.`);
-        const embed = new Discord.RichEmbed()
-        .setColor(0xCF40FA)
-        .addField(`Hey ${message.author.username}!`, `Please try explain why you opened this ticket with as much detail as possible. Our **Support Team** will be here soon to help.`)
-        .setTimestamp();
-        c.send({ embed: embed });
-    }).catch(console.error);
-}
-if (message.content.toLowerCase().startsWith(prefix + `close`)) {
-    if (!message.channel.name.startsWith(`ticket-`)) return message.channel.send(`You can't use the close command outside of a ticket channel.`);
+                            let yesFilter = (reaction, user) => reaction.emoji.name == "✅" && user.id == message.author.id;
+                            let noFiler = (reaction, user) => reaction.emoji.name == "❌" && user.id == message.author.id;
 
-    message.channel.send(`Are you sure? Once confirmed, you cannot reverse this action!\nTo confirm, type \`-confirm\`. This will time out in 10 seconds and be cancelled.`)
-    .then((m) => {
-      message.channel.awaitMessages(response => response.content === '-confirm', {
-        max: 1,
-        time: 10000,
-        errors: ['time'],
-      })
-      .then((collected) => {
-          message.channel.delete();
-        })
-        .catch(() => {
-          m.edit('Ticket close timed out, the ticket was not closed.').then(m2 => {
-              m2.delete();
-          }, 3000);
-        });
-    });
-}
+                            let yes = m.createReactionCollector(yesFilter);
+                            let no = m.createReactionCollector(noFiler);
 
+                            yes.on("collect", v => {
+                                m.delete();
+                                    message.channel.send(`:ballot_box_with_check: | Done ... The Broadcast Message Has Been Sent For ${message.guild.memberCount} Members`).then(msg => msg.delete(5000));
+                                        message.guild.members.forEach(member => {
+                                            let bc = new Discord.RichEmbed()
+                                            .setColor("RANDOM")
+                                            .setThumbnail(message.author.avatarURL)
+                                            .setTitle("Broadcast")
+                                            .addField("Server", message.guild.name)
+                                            .addField("Sender", message.author.username)
+                                            .addField("Message", args);
+
+                                            member.sendEmbed(bc);
+                                        });
+                        });
+                        no.on("collect", v => {
+                            m.delete();
+                            message.channel.send("**Broadcast Canceled.**").then(msg => msg.delete(3000));
+                        });
+                            
+                        });
+            }
+            if(command == "bco") {
+                if(!message.member.hasPermission("ADMINISTRATOR")) {
+                    return message.channel.send("**للأسف لا تمتلك صلاحية `ADMINISTRATOR`**");
+                }
+                    if(!args) {
+                        return message.reply("**يجب عليك كتابة كلمة او جملة لإرسال البرودكاست**");
+                    }
+                        message.channel.send(`**هل أنت متأكد من إرسالك البرودكاست؟\nمحتوى البرودكاست: \`${args}\`**`).then(m => {
+                            m.react("✅")
+                            .then(() => m.react("❌"));
+
+                            let yesFilter = (reaction, user) => reaction.emoji.name == "✅" && user.id == message.author.id;
+                            let noFiler = (reaction, user) => reaction.emoji.name == "❌" && user.id == message.author.id;
+
+                            let yes = m.createReactionCollector(yesFilter);
+                            let no = m.createReactionCollector(noFiler);
+
+                            yes.on("collect", v => {
+                                m.delete();
+                                    message.channel.send(`:ballot_box_with_check: | Done ... The Broadcast Message Has Been Sent For ${message.guild.members.filter(r => r.presence.status !== "offline").size} Members`).then(msg => msg.delete(5000));
+                                        message.guild.members.filter(r => r.presence.status !== "offline").forEach(member => {
+                                            let bco = new Discord.RichEmbed()
+                                            .setColor("RANDOM")
+                                            .setThumbnail(message.author.avatarURL)
+                                            .setTitle("Broadcast")
+                                            .addField("Server", message.guild.name)
+                                            .addField("Sender", message.author.username)
+                                            .addField("Message", args);
+
+                                            member.sendEmbed(bco);
+                                        });
+                        });
+                        no.on("collect", v => {
+                            m.delete();
+                            message.channel.send("**Broadcast Canceled.**").then(msg => msg.delete(3000));
+                        });
+                            
+                        });
+            }
 });
 
-client.login(token);
+// ========================================== [ OTHER COMMANDS ] ====================================
+
+
+client.on("message", async message => {
+    if(message.content == prefix + "server") {
+        if(!message.channel.guild) return;
+            if(!message.member.hasPermission("MANAGE_GUILD")) {
+                return message.channel.send("ليس لديك الصلآحية الكآفية . :broken_heart:");
+            }
+
+                let server = new Discord.RichEmbed()
+                    .setAuthor(message.guild.name)
+                    .setColor("RANDOM")
+                    .setTitle("Server Info :hearts: :sparkles:")
+                    .setDescription(`Members :bust_in_silhouette: : ${message.guild.memberCount}\nOwner :crown: : ${message.guild.owner.user.username}\nServer ID :id: : ${message.guild.id}\nRoles :lock: : ${message.guild.roles.size}\nRegion :earth_africa: : ${message.guild.region.toUpperCase()}`);
+
+                    message.channel.sendEmbed(server);
+
+    }
+});
+client.on("message", async message => {
+    if(message.content.startsWith(prefix + "banned")) {
+        if(!message.guild) return;
+        message.guild.fetchBans()
+        .then(bans => {
+            let b = bans.size;
+            let bb = bans.map(a => `${a}`).join(" - ");
+            message.channel.send(`**\`${b}\` | ${bb}**`);
+        });
+    }
+});
+client.on("message", async message => {
+    if(message.content.startsWith(prefix + "invite")) {
+        let invite = new Discord.RichEmbed()
+            .setColor("RANDOM")
+            .setAuthor(message.author.username, message.author.displayAvatarURL)
+            .setThumbnail(message.author.avatarURL)
+            .setTitle("**Click Here To Invite The Bot To Your Server :sparkling_heart:**")
+            .setURL(`https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=8`);
+            message.channel.sendEmbed(invite);
+    }
+});
+client.on("message", async message => {
+    if(message.content.startsWith(prefix + "help")) {
+        let help = new Discord.RichEmbed()
+            .setColor("RANDOM")
+            .setThumbnail(message.author.avatarURL)
+            .setDescription(`**__برودكاست بوت | Version 1.1__ 
+
+            برودكاست عادي : ${prefix}bc
+            دعوة البوت لسيرفرك : ${prefix}invite
+            معلومات عن السيرفر : ${prefix}server
+            برودكاست للأونلاين فقط : ${prefix}bco
+            يعرض لك عدد المتبندين من سيرفرك : ${prefix}banned
+            رابط سيرفر الدعم الفني : https://discord.gg/YEXcDXt 
+            **`);
+            message.channel.sendEmbed(help); // رابط السيرفر يعود الى سيرفر CODES .
+    }
+});
+
+// DONE BY MOORZ .
+// CODES - COPYRIGHT
+
+
+client.login("NTA5NDQ4NTg2MzEyOTQxNTg5.DuNNow.vJW3YAdlYJNbPTVTX3DqVOPCNqY");
