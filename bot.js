@@ -1,6 +1,6 @@
 const Discord = require("discord.js");
 const client = new Discord.Client();
-const prefix = "$";
+const prefix = "-";
 
 // ========================================== [ CONSTRUCTERS ] =========================================
 
@@ -20,8 +20,8 @@ console.log(`https://discordapp.com/oauth2/authorize?client_id=${client.user.id}
 السلام عليكم ورحمة الله وبركاته .
 هذا ملف بوت برودكاست بوت بالظبط ولكن فيه بعض التصليحات لمشاكل موجودة في البوت
 -
-جميع الحقوق محفوظة لسيرفر كودز .
-CODES SERVER - MOORZ
+ 
+
 */
 
 client.on("message", async message => {
@@ -163,7 +163,6 @@ client.on("message", async message => {
             معلومات عن السيرفر : ${prefix}server
             برودكاست للأونلاين فقط : ${prefix}bco
             يعرض لك عدد المتبندين من سيرفرك : ${prefix}banned
-            رابط سيرفر الدعم الفني : https://discord.gg/YEXcDXt 
             **`);
             message.channel.sendEmbed(help); // رابط السيرفر يعود الى سيرفر CODES .
     }
@@ -173,4 +172,4 @@ client.on("message", async message => {
 // CODES - COPYRIGHT
 
 
-client.login("NTA5NDQ4NTg2MzEyOTQxNTg5.DuNNow.vJW3YAdlYJNbPTVTX3DqVOPCNqY");
+client.login("MzkxNTQwNzIwNTg4MjkyMDk2.DwFVQw.C7S21Qw7mygxz3PUU-iTXSgPlac");
