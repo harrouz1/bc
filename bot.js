@@ -196,4 +196,4 @@ client.on("message", async message => {
 // CODES - COPYRIGHT
 
 
-client.login("NTA5NDQ4NTg2MzEyOTQxNTg5.DuNNow.vJW3YAdlYJNbPTVTX3DqVOPCNqY");
+client.login("MzkxNTQwNzIwNTg4MjkyMDk2.DwFkPA.UfKftEPQFJDeZzWO5EkI2TsWPQE");
