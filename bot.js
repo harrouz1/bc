@@ -192,7 +192,7 @@ client.on("message", async message => {
         let help = new Discord.RichEmbed()
             .setColor("RANDOM")
             .setThumbnail(message.author.avatarURL)
-            .setDescription(`**BC**
+            .setDescription(`**__server project
 
             برودكاست عادي : ${prefix}bc
             معلومات عن السيرفر : ${prefix}server
