@@ -9,7 +9,7 @@ client.on("ready", async() => {
 console.log(`Back Online In ${client.guilds.size} Servers!`);
 console.log(`https://discordapp.com/oauth2/authorize?client_id=${client.user.id}&scope=bot&permissions=8\nInvite Me To Your Server!`);
     setTimeout(() => {
-        client.user.setActivity(`${prefix}help | V 1.1`, {type: "WATCHING"});
+        client.user.setActivity(`${prefix}help  `, {type: "WATCHING"});
     }, 3000);
 });
 
@@ -109,6 +109,31 @@ client.on("message", async message => {
             }
 });
 
+const invites = {};
+
+const wait = require('util').promisify(setTimeout);
+
+client.on('ready', () => {
+  wait(1000);
+
+  client.guilds.forEach(g => {
+    g.fetchInvites().then(guildInvites => {
+      invites[g.id] = guildInvites;
+    });
+  });
+});
+
+client.on('guildMemberAdd', member => {
+  member.guild.fetchInvites().then(guildInvites => {
+    const ei = invites[member.guild.id];
+    invites[member.guild.id] = guildInvites;
+    const invite = guildInvites.find(i => ei.get(i.code).uses < i.uses);
+    const inviter = client.users.get(invite.inviter.id);
+    const logChannel = member.guild.channels.find(channel => channel.name === "project");
+    logChannel.send(`${member} Invited by: <@${inviter.id}>`);
+  });
+});
+
 // ========================================== [ OTHER COMMANDS ] ====================================
 
 
@@ -156,14 +181,12 @@ client.on("message", async message => {
         let help = new Discord.RichEmbed()
             .setColor("RANDOM")
             .setThumbnail(message.author.avatarURL)
-            .setDescription(`**__برودكاست بوت | Version 1.1__ 
+            .setDescription(`**__project server__ 
 
             برودكاست عادي : ${prefix}bc
-            دعوة البوت لسيرفرك : ${prefix}invite
             معلومات عن السيرفر : ${prefix}server
             برودكاست للأونلاين فقط : ${prefix}bco
             يعرض لك عدد المتبندين من سيرفرك : ${prefix}banned
-            رابط سيرفر الدعم الفني : https://discord.gg/YEXcDXt 
             **`);
             message.channel.sendEmbed(help); // رابط السيرفر يعود الى سيرفر CODES .
     }
