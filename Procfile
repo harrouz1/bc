@@ -1,1 +1,1 @@
-worker: node bot.js
+magict: node bot.js
